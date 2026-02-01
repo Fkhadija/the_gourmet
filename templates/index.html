@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gourmet AI | Recipe Discovery</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #ffffff;
+            --text: #1a1a1a;
+            --accent: #c5a059; /* Gourmet Gold */
+            --card-bg: #ffffff;
+            --transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        header { padding: 120px 20px 40px; text-align: center; }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(3rem, 8vw, 5.5rem);
+            margin: 0;
+            font-style: italic;
+            letter-spacing: -2px;
+        }
+
+        .subtitle {
+            font-weight: 300;
+            color: #aaa;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            margin-top: 10px;
+        }
+
+        /* Minimal Search Box */
+        .search-wrapper {
+            max-width: 700px;
+            margin: 0 auto 100px;
+            position: relative;
+            padding: 0 40px;
+        }
+
+        input {
+            width: 100%;
+            padding: 25px 0;
+            border: none;
+            border-bottom: 1px solid #e0e0e0;
+            background: transparent;
+            font-size: 1.4rem;
+            font-family: 'Playfair Display';
+            outline: none;
+            transition: var(--transition);
+        }
+
+        input:focus { border-bottom-color: var(--accent); }
+
+        .search-btn {
+            position: absolute;
+            right: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--accent);
+            font-weight: 600;
+            cursor: pointer;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+
+        /* Bento Grid Results */
+        #result {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 60px 40px;
+            padding: 0 40px 100px;
+        }
+
+        .recipe-card {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .recipe-card.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .img-container {
+            height: 450px;
+            overflow: hidden;
+            position: relative;
+            background: #f9f9f9;
+        }
+
+        .img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 1.2s scale;
+        }
+
+        .recipe-card:hover img { transform: scale(1.08); }
+
+        /* Nutritional Overlay */
+        .nutrition-badge {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.9);
+            padding: 8px 15px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            backdrop-filter: blur(5px);
+        }
+
+        .content { padding: 30px 0; text-align: left; }
+
+        .category {
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .recipe-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            line-height: 1.1;
+        }
+
+        .recipe-summary {
+            font-size: 0.95rem;
+            color: #666;
+            line-height: 1.7;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .meta-info {
+            margin-top: 25px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 0.75rem;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .divider { width: 40px; height: 1px; background: #ddd; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Le Gourmet</h1>
+        <div class="subtitle">Curating Digital Flavors</div>
+    </header>
+
+    <div class="search-wrapper">
+        <input type="text" id="userInput" placeholder="Search a delicacy...">
+        <button class="search-btn" onclick="fetchRecipe()">Discover</button>
+    </div>
+
+    <div id="result"></div>
+
+    <script>
+        async function fetchRecipe() {
+            const query = document.getElementById('userInput').value;
+            const resDiv = document.getElementById('result');
+            if(!query) return;
+
+            resDiv.innerHTML = "";
+
+            try {
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ingredients: query})
+                });
+                const data = await response.json();
+
+                if (data.meals) {
+                    data.meals.forEach((meal, index) => {
+                        const card = document.createElement('div');
+                        card.className = 'recipe-card';
+                        card.onclick = () => window.open(meal.sourceUrl, '_blank');
+                        
+                        // Extracting some nutrition info for your health goals
+                        const healthScore = Math.round(meal.healthScore);
+                        const time = meal.readyInMinutes;
+
+                        card.innerHTML = `
+                            <div class="img-container">
+                                <img src="${meal.image}" alt="${meal.title}">
+                                <div class="nutrition-badge">HEALTH SCORE: ${healthScore}</div>
+                            </div>
+                            <div class="content">
+                                <span class="category">${meal.dishTypes[0] || 'Gourmet'}</span>
+                                <div class="recipe-title">${meal.title}</div>
+                                <div class="recipe-summary">${meal.summary}</div>
+                                <div class="meta-info">
+                                    <span>${time} MINS</span>
+                                    <div class="divider"></div>
+                                    <span>VIEW SELECTION</span>
+                                </div>
+                            </div>
+                        `;
+                        resDiv.appendChild(card);
+                        
+                        // Staggered entrance animation
+                        setTimeout(() => card.classList.add('show'), index * 150);
+                    });
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    </script>
+</body>
+</html>
