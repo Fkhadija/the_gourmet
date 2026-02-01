@@ -38,3 +38,6 @@ def generate():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+# This is required for Vercel to recognize the Flask instance
+app = app
