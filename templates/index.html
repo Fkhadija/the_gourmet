@@ -42,7 +42,6 @@
             margin-top: 10px;
         }
 
-        /* Minimal Search Box */
         .search-wrapper {
             max-width: 700px;
             margin: 0 auto 100px;
@@ -78,7 +77,6 @@
             font-size: 0.9rem;
         }
 
-        /* Bento Grid Results */
         #result {
             max-width: 1300px;
             margin: 0 auto;
@@ -116,7 +114,6 @@
 
         .recipe-card:hover img { transform: scale(1.08); }
 
-        /* Nutritional Overlay */
         .nutrition-badge {
             position: absolute;
             bottom: 20px;
@@ -208,7 +205,7 @@
                         card.className = 'recipe-card';
                         card.onclick = () => window.open(meal.sourceUrl, '_blank');
                         
-                        // Extracting some nutrition info for your health goals
+                        // nutrition infos
                         const healthScore = Math.round(meal.healthScore);
                         const time = meal.readyInMinutes;
 
@@ -230,7 +227,7 @@
                         `;
                         resDiv.appendChild(card);
                         
-                        // Staggered entrance animation
+                        // animation
                         setTimeout(() => card.classList.add('show'), index * 150);
                     });
                 }

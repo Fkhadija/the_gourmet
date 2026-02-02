@@ -3,7 +3,6 @@ from flask import Flask, render_template, request, jsonify
 
 app = Flask(__name__)
 
-# Your Spoonacular Key
 SPOON_API_KEY = "633effcb8bb14984aa5cfffa4fbfbf6d"
 
 @app.route('/')
@@ -38,6 +37,3 @@ def generate():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-# This is required for Vercel to recognize the Flask instance
-app = app
