@@ -6,6 +6,44 @@
     <title>Gourmet | Recipe Discovery</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
+        
+        .footer-branding {
+  display: flex;
+  flex-direction: column; /* Stacks logo over text */
+  align-items: center;    /* Centers everything */
+  gap: 12px;              /* Space between logo and text */
+  padding: 20px;
+  font-family: 'Inter', -apple-system, sans-serif;
+}
+
+.logo {
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: -1px;
+  background: linear-gradient(135deg, #c5a059 0%, #f7db8f 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: transform 0.3s ease;
+  cursor: default;
+}
+
+.logo:hover {
+  transform: scale(1.05); /* Subtle pop on hover */
+}
+
+.copyright {
+  color: #64748b;         /* Modern slate grey */
+  font-size: 0.875rem;
+  letter-spacing: 0.5px;
+  margin: 0;              /* Removes default p margins */
+}
+
+.copyright strong {
+  color: #1e293b;         /* Darker contrast for your name */
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+}
         :root {
             --bg: #ffffff;
             --text: #1a1a1a;
@@ -182,6 +220,11 @@
     </div>
 
     <div id="result"></div>
+
+    <div class="footer-branding">
+      <span class="logo">FK</span>
+      <p class="copyright">&copy; 2026 <strong>Fouganni Khadija</strong>. All Rights Reserved.</p>
+    </div>
 
     <script>
         async function fetchRecipe() {
